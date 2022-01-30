@@ -1862,14 +1862,14 @@ collect_baseline_shift (PangoLineBreaker *self,
     {
       PangoAttribute *attr = l->data;
 
-      if (attr->klass->type == PANGO_ATTR_RISE)
+      if (attr->type == PANGO_ATTR_RISE)
         {
-          int value = ((PangoAttrInt *)attr)->value;
+          int value = attr->int_value;
 
           *start_y_offset += value;
           *end_y_offset -= value;
         }
-      else if (attr->klass->type == PANGO_ATTR_BASELINE_SHIFT)
+      else if (attr->type == PANGO_ATTR_BASELINE_SHIFT)
         {
           if (attr->start_index == item->offset)
             {
@@ -1880,7 +1880,7 @@ collect_baseline_shift (PangoLineBreaker *self,
               entry->attr = attr;
               self->baseline_shifts = g_list_prepend (self->baseline_shifts, entry);
 
-              value = ((PangoAttrInt *)attr)->value;
+              value = attr->int_value;
 
               if (value > 1024 || value < -1024)
                 {
@@ -1942,7 +1942,7 @@ collect_baseline_shift (PangoLineBreaker *self,
 
                   if (attr->start_index == entry->attr->start_index &&
                       attr->end_index == entry->attr->end_index &&
-                      ((PangoAttrInt *)attr)->value == ((PangoAttrInt *)entry->attr)->value)
+                      attr->int_value == entry->attr->int_value)
                     {
                       *end_x_offset -= entry->x_offset;
                       *end_y_offset -= entry->y_offset;

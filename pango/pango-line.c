@@ -456,11 +456,11 @@ pango_line_get_empty_extents (PangoLine        *line,
 
               attr = pango_attr_iterator_get (&iter, PANGO_ATTR_LINE_HEIGHT);
               if (attr)
-                line_height_factor = ((PangoAttrFloat *)attr)->value;
+                line_height_factor = attr->double_value;
 
               attr = pango_attr_iterator_get (&iter, PANGO_ATTR_ABSOLUTE_LINE_HEIGHT);
               if (attr)
-                absolute_line_height = ((PangoAttrInt *)attr)->value;
+                absolute_line_height = attr->int_value;
 
               break;
             }
