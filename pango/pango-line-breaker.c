@@ -6,6 +6,8 @@
 #include "pango-tabs.h"
 #include "pango-impl-utils.h"
 #include "pango-attributes-private.h"
+#include "pango-attr-list-private.h"
+#include "pango-attr-iterator-private.h"
 #include "pango-item-private.h"
 #include "pango-utils-internal.h"
 
@@ -169,7 +171,7 @@ apply_attributes_to_items (GList         *items,
   if (!attrs)
     return;
 
-  _pango_attr_list_get_iterator (attrs, &iter);
+  pango_attr_list_init_iterator (attrs, &iter);
 
   for (l = items; l; l = l->next)
     {
@@ -177,7 +179,7 @@ apply_attributes_to_items (GList         *items,
       pango_item_apply_attrs (item, &iter);
     }
 
-  _pango_attr_iterator_destroy (&iter);
+  pango_attr_iterator_clear (&iter);
 }
 
 static PangoLogAttr *
@@ -455,12 +457,12 @@ ensure_tab_width (PangoLineBreaker *self)
         {
           PangoAttrIterator iter;
 
-          _pango_attr_list_get_iterator (attrs, &iter);
+          pango_attr_list_init_iterator (attrs, &iter);
           pango_attr_iterator_get_font (&iter, font_desc, &language, NULL);
-          _pango_attr_iterator_destroy (&iter);
+          pango_attr_iterator_clear (&iter);
         }
 
-      _pango_attr_list_init (&tmp_attrs);
+      pango_attr_list_init (&tmp_attrs);
       attr = pango_attr_font_desc_new (font_desc);
       pango_font_description_free (font_desc);
       pango_attr_list_insert_before (&tmp_attrs, attr);
@@ -480,7 +482,7 @@ ensure_tab_width (PangoLineBreaker *self)
           attrs = NULL;
         }
 
-      _pango_attr_list_destroy (&tmp_attrs);
+      pango_attr_list_destroy (&tmp_attrs);
 
       item = items->data;
       pango_shape ("        ", 8, "        ", 8, &item->analysis, glyphs, shape_flags);
