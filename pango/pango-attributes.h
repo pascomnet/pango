@@ -180,7 +180,7 @@ typedef enum {
   PANGO_UNDERLINE_POSITION_UNDER
 } PangoUnderlinePosition;
 
-PANGO_AVAILABLE_IN_1_52
+PANGO_AVAILABLE_IN_ALL
 PangoAttribute *        pango_attr_underline_position_new       (PangoUnderlinePosition      position);
 
 PANGO_AVAILABLE_IN_ALL

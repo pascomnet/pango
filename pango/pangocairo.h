@@ -158,12 +158,13 @@ PANGO_AVAILABLE_IN_1_10
 void pango_cairo_show_layout       (cairo_t          *cr,
 				    PangoLayout      *layout);
 
-PANGO_AVAILABLE_IN_1_14
-void pango_cairo_show_error_underline (cairo_t       *cr,
-				       double         x,
-				       double         y,
-				       double         width,
-				       double         height);
+PANGO_AVAILABLE_IN_1_52
+void pango_cairo_show_styled_line  (cairo_t          *cr,
+                                    PangoLineStyle    style,
+                                    double            x,
+                                    double            y,
+                                    double            width,
+                                    double            height);
 
 
 /*
@@ -183,12 +184,13 @@ PANGO_AVAILABLE_IN_ALL
 void pango_cairo_lines_path        (cairo_t          *cr,
                                     PangoLines       *lines);
 
-PANGO_AVAILABLE_IN_1_14
-void pango_cairo_error_underline_path (cairo_t       *cr,
-				       double         x,
-				       double         y,
-				       double         width,
-				       double         height);
+PANGO_AVAILABLE_IN_1_52
+void pango_cairo_styled_line_path  (cairo_t          *cr,
+                                    PangoLineStyle    style,
+                                    double            x,
+                                    double            y,
+                                    double            width,
+                                    double            height);
 
 G_END_DECLS
 
