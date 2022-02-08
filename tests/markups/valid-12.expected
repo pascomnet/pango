@@ -11,16 +11,16 @@ range 0 8
 0 8 overline single
 range 8 9
 range 9 23
-9 23 overline-color #ffff00000000
+9 23 overline-color #ffff00000000ffff
 range 23 24
 range 24 35
-24 35 underline single-line
+24 35 underline single
 range 35 36
 range 36 47
-36 47 underline double-line
+36 47 underline double
 range 47 48
 range 48 58
-48 58 underline error-line
+48 58 underline wavy
 range 58 2147483647
 
 

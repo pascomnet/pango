@@ -1,1 +1,1 @@
-ERROR: 'dotted' is not a valid value for the 'overline' attribute on <span> tag, line 1; valid values are none/single
+ERROR: 'triple' is not a valid value for the 'overline' attribute on <span> tag, line 1; valid values are none/single/double/dashed/dotted/wavy

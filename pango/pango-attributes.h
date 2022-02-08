@@ -244,10 +244,6 @@ PANGO_AVAILABLE_IN_1_16
 PangoAttribute *        pango_attr_gravity_hint_new             (PangoGravityHint             hint);
 PANGO_AVAILABLE_IN_1_38
 PangoAttribute *        pango_attr_font_features_new            (const char                  *features);
-PANGO_AVAILABLE_IN_1_38
-PangoAttribute *        pango_attr_foreground_alpha_new         (guint16                      alpha);
-PANGO_AVAILABLE_IN_1_38
-PangoAttribute *        pango_attr_background_alpha_new         (guint16                      alpha);
 PANGO_AVAILABLE_IN_1_44
 PangoAttribute *        pango_attr_allow_breaks_new             (gboolean                     allow_breaks);
 PANGO_AVAILABLE_IN_1_50
