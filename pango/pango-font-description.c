@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include "pango-font-description.h"
+#include "pango-font-description-private.h"
 
 #include "pango-utils-internal.h"
 
