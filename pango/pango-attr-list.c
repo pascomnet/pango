@@ -1245,12 +1245,22 @@ pango_attr_list_from_string (const char *text)
           attr = pango_attr_sentence_new ();
           break;
 
+        case PANGO_ATTR_PARAGRAPH:
+          integer = g_ascii_strtoll (p, &endp, 10);
+          if (!is_valid_end_char (*endp)) goto fail;
+          attr = pango_attr_paragraph_new ();
+          break;
+
         case PANGO_ATTR_BASELINE_SHIFT:
           ENUM_ATTR(baseline_shift, PangoBaselineShift, 0, G_MAXINT);
           break;
 
         case PANGO_ATTR_FONT_SCALE:
           ENUM_ATTR(font_scale, PangoFontScale, PANGO_FONT_SCALE_NONE, PANGO_FONT_SCALE_SMALL_CAPS);
+          break;
+
+        case PANGO_ATTR_LINE_SPACING:
+          INT_ATTR(line_spacing, int);
           break;
 
         default:
