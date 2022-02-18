@@ -29,12 +29,10 @@
 G_BEGIN_DECLS
 
 #define PANGO_TYPE_FONT_MAP              (pango_font_map_get_type ())
-#define PANGO_FONT_MAP(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), PANGO_TYPE_FONT_MAP, PangoFontMap))
-#define PANGO_IS_FONT_MAP(object)        (G_TYPE_CHECK_INSTANCE_TYPE ((object), PANGO_TYPE_FONT_MAP))
-
 
 PANGO_AVAILABLE_IN_ALL
-GType         pango_font_map_get_type       (void) G_GNUC_CONST;
+PANGO_DECLARE_INTERNAL_TYPE (PangoFontMap, pango_font_map, PANGO, FONT_MAP, GObject)
+
 PANGO_AVAILABLE_IN_1_22
 PangoContext * pango_font_map_create_context (PangoFontMap               *fontmap);
 PANGO_AVAILABLE_IN_ALL
@@ -55,8 +53,6 @@ PANGO_AVAILABLE_IN_1_46
 PangoFontFamily *pango_font_map_get_family (PangoFontMap                 *fontmap,
                                             const char                   *name);
 
-
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(PangoFontMap, g_object_unref)
 
 G_END_DECLS
 
