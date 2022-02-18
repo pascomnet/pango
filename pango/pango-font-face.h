@@ -28,12 +28,9 @@ G_BEGIN_DECLS
 
 
 #define PANGO_TYPE_FONT_FACE              (pango_font_face_get_type ())
-#define PANGO_FONT_FACE(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), PANGO_TYPE_FONT_FACE, PangoFontFace))
-#define PANGO_IS_FONT_FACE(object)        (G_TYPE_CHECK_INSTANCE_TYPE ((object), PANGO_TYPE_FONT_FACE))
-
 
 PANGO_AVAILABLE_IN_ALL
-GType                   pango_font_face_get_type       (void) G_GNUC_CONST;
+PANGO_DECLARE_INTERNAL_TYPE (PangoFontFace, pango_font_face, PANGO, FONT_FACE, GObject)
 
 PANGO_AVAILABLE_IN_ALL
 PangoFontDescription *  pango_font_face_describe       (PangoFontFace  *face);
@@ -45,7 +42,5 @@ gboolean                pango_font_face_is_synthesized (PangoFontFace  *face) G_
 PANGO_AVAILABLE_IN_1_46
 PangoFontFamily *       pango_font_face_get_family     (PangoFontFace  *face);
 
-
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(PangoFontFace, g_object_unref)
 
 G_END_DECLS
