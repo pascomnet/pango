@@ -30,11 +30,9 @@ G_BEGIN_DECLS
 
 
 #define PANGO_TYPE_FONT_FAMILY              (pango_font_family_get_type ())
-#define PANGO_FONT_FAMILY(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), PANGO_TYPE_FONT_FAMILY, PangoFontFamily))
-#define PANGO_IS_FONT_FAMILY(object)        (G_TYPE_CHECK_INSTANCE_TYPE ((object), PANGO_TYPE_FONT_FAMILY))
 
 PANGO_AVAILABLE_IN_ALL
-GType                   pango_font_family_get_type      (void) G_GNUC_CONST;
+PANGO_DECLARE_INTERNAL_TYPE (PangoFontFamily, pango_font_family, PANGO, FONT_FAMILY, GObject)
 
 PANGO_AVAILABLE_IN_ALL
 const char *            pango_font_family_get_name      (PangoFontFamily  *family) G_GNUC_PURE;
@@ -46,8 +44,5 @@ gboolean                pango_font_family_is_variable   (PangoFontFamily  *famil
 PANGO_AVAILABLE_IN_1_46
 PangoFontFace *         pango_font_family_get_face      (PangoFontFamily  *family,
                                                          const char       *name);
-
-
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(PangoFontFamily, g_object_unref)
 
 G_END_DECLS
