@@ -29,6 +29,7 @@
 #include <glib.h>
 #include <hb.h>
 
+#include "pango-font-metrics-private.h"
 #include "pango-impl-utils.h"
 #include "pangowin32.h"
 #include "pangowin32-private.h"
