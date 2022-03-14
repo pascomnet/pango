@@ -759,7 +759,7 @@ create_standard_family (PangoWin32FontMap *win32fontmap,
               pango_font_description_set_family_static (new_face->description, standard_family_name);
 
               if (old_face->coverage != NULL)
-                new_face->coverage = pango_coverage_ref (old_face->coverage);
+                new_face->coverage = g_object_ref (old_face->coverage);
               else
                 new_face->coverage = NULL;
 
