@@ -475,20 +475,27 @@ static int
 max_glyph_width (PangoLayout *layout)
 {
   int max_width = 0;
-  GSList *l, *r;
+  int i;
+  PangoLines *lines;
+  PangoLine **l;
 
-  for (l = pango_layout_get_lines_readonly (layout); l; l = l->next)
+  lines = pango_layout_get_lines (layout);
+  l = pango_lines_get_lines (lines);
+
+  for (i = 0; i < pango_lines_get_line_count (lines); i++)
     {
-      PangoLine *line = l->data;
+      PangoRun **runs = pango_line_get_runs (l[i]);
+      int n_runs = pango_line_get_run_count (l[i]);
+      int j;
 
-      for (r = line->runs; r; r = r->next)
+      for (j = 0;j < n_runs; j++)
 	{
-	  PangoGlyphString *glyphs = ((PangoGlyphItem *)r->data)->glyphs;
-	  int i;
+	  PangoGlyphString *glyphs = pango_run_get_glyphs (runs[j]);
+	  int k;
 
-	  for (i = 0; i < glyphs->num_glyphs; i++)
-	    if (glyphs->glyphs[i].geometry.width > max_width)
-	      max_width = glyphs->glyphs[i].geometry.width;
+	  for (k = 0; k < glyphs->num_glyphs; k++)
+	    if (glyphs->glyphs[k].geometry.width > max_width)
+	      max_width = glyphs->glyphs[k].geometry.width;
 	}
     }
 
@@ -882,37 +889,39 @@ pango_win32_render_layout_line (HDC              hdc,
 				int              x,
 				int              y)
 {
-  GSList *tmp_list = line->runs;
+  PangoRun **runs;
   PangoRectangle overall_rect;
   PangoRectangle logical_rect;
   PangoRectangle ink_rect;
   int oldbkmode = SetBkMode (hdc, TRANSPARENT);
+  int n_runs, i;
 
   int x_off = 0;
 
+  runs = pango_line_get_runs (line);
+  n_runs = pango_line_get_run_count (line);
   pango_line_get_extents (line, NULL, &overall_rect);
 
-  while (tmp_list)
+  for (i = 0; i < n_runs; i++)
     {
       COLORREF oldfg = 0;
       HPEN uline_pen, old_pen;
       POINT points[2];
       PangoLineStyle line_style = PANGO_LINE_STYLE_NONE;
-      PangoLayoutRun *run = tmp_list->data;
+      PangoRun *run = runs[i];
       PangoAttrColor fg_color, bg_color, uline_color;
       gboolean fg_set, bg_set, uline_set;
-
-      tmp_list = tmp_list->next;
+	  PangoGlyphString *glyphs = pango_run_get_glyphs (runs[i]);
 
       pango_win32_get_item_properties (run->item, &line_style, &uline_color, &uline_set, &fg_color, &fg_set, &bg_color, &bg_set);
       if (!uline_set)
 	uline_color = fg_color;
 
       if (line_style == PANGO_LINE_STYLE_NONE)
-	pango_glyph_string_extents (run->glyphs, run->item->analysis.font,
+	pango_glyph_string_extents (glyphs, run->item->analysis.font,
 				    NULL, &logical_rect);
       else
-	pango_glyph_string_extents (run->glyphs, run->item->analysis.font,
+	pango_glyph_string_extents (glyphs, run->item->analysis.font,
 				    &ink_rect, &logical_rect);
 
       if (bg_set)
@@ -940,7 +949,7 @@ pango_win32_render_layout_line (HDC              hdc,
 	  oldfg = SetTextColor (hdc, fg_col);
 	}
 
-      pango_win32_render (hdc, run->item->analysis.font, run->glyphs,
+      pango_win32_render (hdc, run->item->analysis.font, glyphs,
 			  x + PANGO_PIXELS (x_off), y);
 
       if (fg_set)
