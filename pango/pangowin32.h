@@ -48,7 +48,7 @@ void           pango_win32_render             (HDC               hdc,
 					       gint              y);
 PANGO_AVAILABLE_IN_ALL
 void           pango_win32_render_layout_line (HDC               hdc,
-					       PangoLayoutLine  *line,
+					       PangoLine        *line,
 					       int               x,
 					       int               y);
 PANGO_AVAILABLE_IN_ALL

@@ -479,7 +479,7 @@ max_glyph_width (PangoLayout *layout)
 
   for (l = pango_layout_get_lines_readonly (layout); l; l = l->next)
     {
-      PangoLayoutLine *line = l->data;
+      PangoLine *line = l->data;
 
       for (r = line->runs; r; r = r->next)
 	{
@@ -867,18 +867,18 @@ pango_win32_font_get_coverage (PangoFont     *font,
 /**
  * pango_win32_render_layout_line:
  * @hdc: DC to use for drawing
- * @line: a `PangoLayoutLine`
+ * @line: a `PangoLine`
  * @x: the x position of start of string (in pixels)
  * @y: the y position of baseline (in pixels)
  *
- * Render a `PangoLayoutLine` onto a device context.
+ * Render a `PangoLine` onto a device context.
  *
  * For underlining to work property the text alignment
  * of the DC should have TA_BASELINE and TA_LEFT.
  */
 void
 pango_win32_render_layout_line (HDC              hdc,
-				PangoLayoutLine *line,
+				PangoLine       *line,
 				int              x,
 				int              y)
 {
@@ -890,7 +890,7 @@ pango_win32_render_layout_line (HDC              hdc,
 
   int x_off = 0;
 
-  pango_layout_line_get_extents (line,NULL, &overall_rect);
+  pango_line_get_extents (line, NULL, &overall_rect);
 
   while (tmp_list)
     {
@@ -1028,7 +1028,7 @@ pango_win32_render_layout_line (HDC              hdc,
  * @x: the X position of the left of the layout (in pixels)
  * @y: the Y position of the top of the layout (in pixels)
  *
- * Render a `PangoLayoutLine` onto an HDC.
+ * Render a `PangoLine` onto an HDC.
  */
 void
 pango_win32_render_layout (HDC          hdc,
@@ -1046,7 +1046,7 @@ pango_win32_render_layout (HDC          hdc,
   do
     {
       PangoRectangle   logical_rect;
-      PangoLayoutLine *line;
+      PangoLine       *line;
       int              baseline;
 
       line = pango_layout_iter_get_line_readonly (iter);
