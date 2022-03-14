@@ -31,6 +31,7 @@
 
 #include "pango-font-metrics-private.h"
 #include "pango-impl-utils.h"
+#include "pango-item-private.h"
 #include "pangowin32.h"
 #include "pangowin32-private.h"
 
@@ -914,8 +915,11 @@ pango_win32_render_layout_line (HDC              hdc,
       gboolean fg_set, bg_set, uline_set;
 	  PangoGlyphString *glyphs = pango_run_get_glyphs (runs[i]);
       PangoItem *item = pango_run_get_item (run);
+      ItemProperties properties;
 
       pango_win32_get_item_properties (item, &line_style, &uline_color, &uline_set, &fg_color, &fg_set, &bg_color, &bg_set);
+      pango_item_get_properties (item, &properties);
+
       if (!uline_set)
 	uline_color = fg_color;
 
@@ -980,8 +984,11 @@ pango_win32_render_layout_line (HDC              hdc,
 	  break;
 	case PANGO_LINE_STYLE_SINGLE:
 	  points[0].x = x + PANGO_PIXELS (x_off + ink_rect.x) - 1;
-	  points[0].y = points[1].y = y + 2;
+	  points[0].y = properties.uline_position == PANGO_UNDERLINE_POSITION_UNDER ?
+                    y + PANGO_PIXELS (ink_rect.y + ink_rect.height) + 2 :
+                    y + 2;
 	  points[1].x = x + PANGO_PIXELS (x_off + ink_rect.x + ink_rect.width);
+	  points[1].y = points[0].y;
 	  Polyline (hdc, points, 2);
 	  break;
 	case PANGO_LINE_STYLE_DOTTED:
@@ -1006,12 +1013,6 @@ pango_win32_render_layout_line (HDC              hdc,
 	      counter = (counter + 1) % 2;
 	    }
 	  }
-	  break;
-	case PANGO_UNDERLINE_LOW:
-	  points[0].x = x + PANGO_PIXELS (x_off + ink_rect.x) - 1;
-	  points[0].y = points[1].y = y + PANGO_PIXELS (ink_rect.y + ink_rect.height) + 2;
-	  points[1].x = x + PANGO_PIXELS (x_off + ink_rect.x + ink_rect.width);
-	  Polyline (hdc, points, 2);
 	  break;
 	}
 
