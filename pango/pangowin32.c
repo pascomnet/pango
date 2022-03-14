@@ -60,11 +60,11 @@ static double   pango_win32_font_real_get_metrics_factor (PangoFont *font);
 
 static void                  pango_win32_get_item_properties    (PangoItem        *item,
 								 PangoLineStyle   *line_style,
-								 PangoAttrColor   *uline_color,
+								 PangoColor       *uline_color,
 								 gboolean         *uline_set,
-								 PangoAttrColor   *fg_color,
+								 PangoColor       *fg_color,
 								 gboolean         *fg_set,
-								 PangoAttrColor   *bg_color,
+								 PangoColor       *bg_color,
 								 gboolean         *bg_set);
 
 static hb_font_t *           pango_win32_font_create_hb_font    (PangoFont *font);
@@ -910,7 +910,7 @@ pango_win32_render_layout_line (HDC              hdc,
       POINT points[2];
       PangoLineStyle line_style = PANGO_LINE_STYLE_NONE;
       PangoRun *run = runs[i];
-      PangoAttrColor fg_color, bg_color, uline_color;
+      PangoColor fg_color, bg_color, uline_color;
       gboolean fg_set, bg_set, uline_set;
 	  PangoGlyphString *glyphs = pango_run_get_glyphs (runs[i]);
       PangoItem *item = pango_run_get_item (run);
@@ -928,9 +928,9 @@ pango_win32_render_layout_line (HDC              hdc,
 
       if (bg_set)
 	{
-	  COLORREF bg_col = RGB ((bg_color.color.red) >> 8,
-				 (bg_color.color.green) >> 8,
-				 (bg_color.color.blue) >> 8);
+	  COLORREF bg_col = RGB ((bg_color.red) >> 8,
+				 (bg_color.green) >> 8,
+				 (bg_color.blue) >> 8);
 	  HBRUSH bg_brush = CreateSolidBrush (bg_col);
 	  HBRUSH old_brush = SelectObject (hdc, bg_brush);
 	  old_pen = SelectObject (hdc, GetStockObject (NULL_PEN));
@@ -945,9 +945,9 @@ pango_win32_render_layout_line (HDC              hdc,
 
       if (fg_set)
 	{
-	  COLORREF fg_col = RGB ((fg_color.color.red) >> 8,
-				 (fg_color.color.green) >> 8,
-				 (fg_color.color.blue) >> 8);
+	  COLORREF fg_col = RGB ((fg_color.red) >> 8,
+				 (fg_color.green) >> 8,
+				 (fg_color.blue) >> 8);
 	  oldfg = SetTextColor (hdc, fg_col);
 	}
 
@@ -959,9 +959,9 @@ pango_win32_render_layout_line (HDC              hdc,
 
       if (line_style != PANGO_LINE_STYLE_NONE)
 	{
-	  COLORREF uline_col = RGB ((uline_color.color.red) >> 8,
-				    (uline_color.color.green) >> 8,
-				    (uline_color.color.blue) >> 8);
+	  COLORREF uline_col = RGB ((uline_color.red) >> 8,
+				    (uline_color.green) >> 8,
+				    (uline_color.blue) >> 8);
 	  uline_pen = CreatePen (PS_SOLID, 1, uline_col);
 	  old_pen = SelectObject (hdc, uline_pen);
 	}
@@ -1081,11 +1081,11 @@ pango_win32_render_layout (HDC          hdc,
 static void
 pango_win32_get_item_properties (PangoItem      *item,
 				 PangoLineStyle *line_style,
-				 PangoAttrColor *uline_color,
+				 PangoColor     *uline_color,
 				 gboolean       *uline_set,
-				 PangoAttrColor *fg_color,
+				 PangoColor     *fg_color,
 				 gboolean       *fg_set,
-				 PangoAttrColor *bg_color,
+				 PangoColor     *bg_color,
 				 gboolean       *bg_set)
 {
   GSList *tmp_list = item->analysis.extra_attrs;
@@ -1100,16 +1100,16 @@ pango_win32_get_item_properties (PangoItem      *item,
     {
       PangoAttribute *attr = tmp_list->data;
 
-      switch (attr->klass->type)
+      switch (PANGO_ATTR_VALUE_TYPE (attr))
 	{
 	case PANGO_ATTR_UNDERLINE:
 	  if (line_style)
-	    *line_style = ((PangoAttrInt *)attr)->value;
+	    *line_style = attr->int_value;
 	  break;
 
 	case PANGO_ATTR_UNDERLINE_COLOR:
 	  if (uline_color)
-	    *uline_color = *((PangoAttrColor *)attr);
+	    *uline_color = attr->color_value;
 	  if (uline_set)
 	    *uline_set = TRUE;
 
@@ -1117,7 +1117,7 @@ pango_win32_get_item_properties (PangoItem      *item,
 
 	case PANGO_ATTR_FOREGROUND:
 	  if (fg_color)
-	    *fg_color = *((PangoAttrColor *)attr);
+	    *fg_color = attr->color_value;
 	  if (fg_set)
 	    *fg_set = TRUE;
 
@@ -1125,7 +1125,7 @@ pango_win32_get_item_properties (PangoItem      *item,
 
 	case PANGO_ATTR_BACKGROUND:
 	  if (bg_color)
-	    *bg_color = *((PangoAttrColor *)attr);
+	    *bg_color = attr->color_value;
 	  if (bg_set)
 	    *bg_set = TRUE;
 
