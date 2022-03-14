@@ -88,9 +88,6 @@ static PangoFontset *pango_win32_font_map_load_fontset (PangoFontMap            
                                                         PangoContext                 *context,
                                                         const PangoFontDescription   *desc,
                                                         PangoLanguage                *language);
-static void       pango_win32_font_map_list_families (PangoFontMap                 *fontmap,
-                                                      PangoFontFamily            ***families,
-                                                      int                          *n_families);
 
 static PangoFont *pango_win32_font_map_real_find_font (PangoWin32FontMap           *win32fontmap,
                                                        PangoContext                *context,
@@ -889,7 +886,6 @@ _pango_win32_font_map_class_init (PangoWin32FontMapClass *class)
   fontmap_class->load_font = pango_win32_font_map_load_font;
   /* we now need a load_fontset implementation for the Win32 backend */
   fontmap_class->load_fontset = pango_win32_font_map_load_fontset;
-  fontmap_class->list_families = pango_win32_font_map_list_families;
   fontmap_class->get_face = pango_win32_font_map_get_face;
   class->aliases = g_hash_table_new_full ((GHashFunc)alias_hash,
                                           (GEqualFunc)alias_equal,
@@ -960,41 +956,6 @@ pango_win32_font_map_finalize (GObject *object)
 /*
  * PangoWin32Family
  */
-static void
-pango_win32_family_list_faces (PangoFontFamily  *family,
-                               PangoFontFace  ***faces,
-                               int              *n_faces)
-{
-  PangoWin32Family *win32family = PANGO_WIN32_FAMILY (family);
-  GSList *p;
-  int n;
-
-  p = win32family->faces;
-  n = 0;
-  while (p)
-    {
-      n++;
-      p = p->next;
-    }
-
-  if (faces)
-    {
-      int i;
-
-      *faces = g_new (PangoFontFace *, n);
-
-      p = win32family->faces;
-      i = 0;
-      while (p)
-        {
-          (*faces)[i++] = p->data;
-          p = p->next;
-        }
-    }
-  if (n_faces)
-    *n_faces = n;
-}
-
 static const char *
 pango_win32_family_get_name (PangoFontFamily  *family)
 {
@@ -1031,7 +992,6 @@ pango_win32_family_class_init (PangoFontFamilyClass *class)
   GObjectClass *object_class = G_OBJECT_CLASS (class);
 
   object_class->finalize = pango_win32_family_finalize;
-  class->list_faces = pango_win32_family_list_faces;
   class->get_name = pango_win32_family_get_name;
   class->is_monospace = pango_win32_family_is_monospace;
 }
@@ -1039,50 +999,6 @@ pango_win32_family_class_init (PangoFontFamilyClass *class)
 static void
 pango_win32_family_init (PangoWin32Family *family)
 {
-}
-
-static void
-list_families_foreach (gpointer key,
-                       gpointer value,
-                       gpointer user_data)
-{
-  GSList **list = user_data;
-
-  *list = g_slist_prepend (*list, value);
-}
-
-static void
-pango_win32_font_map_list_families (PangoFontMap      *fontmap,
-                                    PangoFontFamily ***families,
-                                    int               *n_families)
-{
-  GSList *family_list = NULL;
-  GSList *tmp_list;
-  PangoWin32FontMap *win32fontmap = (PangoWin32FontMap *)fontmap;
-
-  if (!n_families)
-    return;
-
-  g_hash_table_foreach (win32fontmap->families, list_families_foreach, &family_list);
-
-  *n_families = g_slist_length (family_list);
-
-  if (families)
-    {
-      int i = 0;
-
-      *families = g_new (PangoFontFamily *, *n_families);
-
-      tmp_list = family_list;
-      while (tmp_list)
-        {
-          (*families)[i] = tmp_list->data;
-          i++;
-          tmp_list = tmp_list->next;
-        }
-    }
-
-  g_slist_free (family_list);
 }
 
 static PangoWin32Family *
