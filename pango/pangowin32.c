@@ -1032,49 +1032,6 @@ pango_win32_render_layout_line (HDC              hdc,
     SetBkMode (hdc, oldbkmode);
 }
 
-/**
- * pango_win32_render_layout:
- * @hdc: HDC to use for drawing
- * @layout: a `PangoLayout`
- * @x: the X position of the left of the layout (in pixels)
- * @y: the Y position of the top of the layout (in pixels)
- *
- * Render a `PangoLine` onto an HDC.
- */
-void
-pango_win32_render_layout (HDC          hdc,
-			   PangoLayout *layout,
-			   int          x,
-			   int          y)
-{
-  PangoLineIter *iter;
-
-  g_return_if_fail (hdc != NULL);
-  g_return_if_fail (PANGO_IS_LAYOUT (layout));
-
-  iter = pango_layout_get_iter (layout);
-
-  do
-    {
-      PangoRectangle   logical_rect;
-      PangoLine       *line;
-      int              baseline;
-
-      line = pango_layout_iter_get_line_readonly (iter);
-
-      pango_layout_iter_get_line_extents (iter, NULL, &logical_rect);
-      baseline = pango_layout_iter_get_baseline (iter);
-
-      pango_win32_render_layout_line (hdc,
-				      line,
-				      x + PANGO_PIXELS (logical_rect.x),
-				      y + PANGO_PIXELS (baseline));
-    }
-  while (pango_layout_iter_next_line (iter));
-
-  pango_layout_iter_free (iter);
-}
-
 /* This utility function is duplicated here and in pango-layout.c; should it be
  * public? Trouble is - what is the appropriate set of properties?
  */
