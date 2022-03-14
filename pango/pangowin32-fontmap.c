@@ -76,9 +76,6 @@ static GType      pango_win32_face_get_type          (void);
 
 static GType      pango_win32_family_get_type        (void);
 
-static void       pango_win32_face_list_sizes        (PangoFontFace  *face,
-                                                      int           **sizes,
-                                                      int            *n_sizes);
 
 static void       pango_win32_font_map_finalize      (GObject                      *object);
 static PangoFont *pango_win32_font_map_load_font     (PangoFontMap                 *fontmap,
@@ -1799,7 +1796,6 @@ pango_win32_face_class_init (PangoFontFaceClass *class)
   object_class->finalize = pango_win32_face_finalize;
   class->describe = pango_win32_face_describe;
   class->get_face_name = pango_win32_face_get_face_name;
-  class->list_sizes = pango_win32_face_list_sizes;
   class->is_synthesized = pango_win32_face_is_synthesized;
   class->get_family = pango_win32_face_get_family;
 }
@@ -1807,20 +1803,6 @@ pango_win32_face_class_init (PangoFontFaceClass *class)
 static void
 pango_win32_face_init (PangoWin32Face *face)
 {
-}
-
-static void
-pango_win32_face_list_sizes (PangoFontFace  *face,
-                             int           **sizes,
-                             int            *n_sizes)
-{
-  /*
-   * for scalable fonts it's simple, and currently we only have such
-   * see : pango_win32_enum_proc(), TRUETYPE_FONTTYPE
-   */
-  if (sizes)
-    *sizes = NULL;
-  *n_sizes = 0;
 }
 
 /**
