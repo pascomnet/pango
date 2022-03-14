@@ -31,6 +31,7 @@
 #include <errno.h>
 #include <glib/gstdio.h>
 
+#include "pango-font-family-private.h"
 #include "pango-fontmap.h"
 #include "pango-impl-utils.h"
 #include "pangowin32-private.h"
