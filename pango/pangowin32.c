@@ -913,16 +913,17 @@ pango_win32_render_layout_line (HDC              hdc,
       PangoAttrColor fg_color, bg_color, uline_color;
       gboolean fg_set, bg_set, uline_set;
 	  PangoGlyphString *glyphs = pango_run_get_glyphs (runs[i]);
+      PangoItem *item = pango_run_get_item (run);
 
-      pango_win32_get_item_properties (run->item, &line_style, &uline_color, &uline_set, &fg_color, &fg_set, &bg_color, &bg_set);
+      pango_win32_get_item_properties (item, &line_style, &uline_color, &uline_set, &fg_color, &fg_set, &bg_color, &bg_set);
       if (!uline_set)
 	uline_color = fg_color;
 
       if (line_style == PANGO_LINE_STYLE_NONE)
-	pango_glyph_string_extents (glyphs, run->item->analysis.font,
+	pango_glyph_string_extents (glyphs, item->analysis.font,
 				    NULL, &logical_rect);
       else
-	pango_glyph_string_extents (glyphs, run->item->analysis.font,
+	pango_glyph_string_extents (glyphs, item->analysis.font,
 				    &ink_rect, &logical_rect);
 
       if (bg_set)
@@ -950,7 +951,7 @@ pango_win32_render_layout_line (HDC              hdc,
 	  oldfg = SetTextColor (hdc, fg_col);
 	}
 
-      pango_win32_render (hdc, run->item->analysis.font, glyphs,
+      pango_win32_render (hdc, item->analysis.font, glyphs,
 			  x + PANGO_PIXELS (x_off), y);
 
       if (fg_set)
