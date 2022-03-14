@@ -58,7 +58,7 @@ static void     pango_win32_font_real_done_font        (PangoFont *font);
 static double   pango_win32_font_real_get_metrics_factor (PangoFont *font);
 
 static void                  pango_win32_get_item_properties    (PangoItem        *item,
-								 PangoUnderline   *uline,
+								 PangoLineStyle   *line_style,
 								 PangoAttrColor   *uline_color,
 								 gboolean         *uline_set,
 								 PangoAttrColor   *fg_color,
@@ -897,18 +897,18 @@ pango_win32_render_layout_line (HDC              hdc,
       COLORREF oldfg = 0;
       HPEN uline_pen, old_pen;
       POINT points[2];
-      PangoUnderline uline = PANGO_UNDERLINE_NONE;
+      PangoLineStyle line_style = PANGO_LINE_STYLE_NONE;
       PangoLayoutRun *run = tmp_list->data;
       PangoAttrColor fg_color, bg_color, uline_color;
       gboolean fg_set, bg_set, uline_set;
 
       tmp_list = tmp_list->next;
 
-      pango_win32_get_item_properties (run->item, &uline, &uline_color, &uline_set, &fg_color, &fg_set, &bg_color, &bg_set);
+      pango_win32_get_item_properties (run->item, &line_style, &uline_color, &uline_set, &fg_color, &fg_set, &bg_color, &bg_set);
       if (!uline_set)
 	uline_color = fg_color;
 
-      if (uline == PANGO_UNDERLINE_NONE)
+      if (line_style == PANGO_LINE_STYLE_NONE)
 	pango_glyph_string_extents (run->glyphs, run->item->analysis.font,
 				    NULL, &logical_rect);
       else
@@ -946,7 +946,7 @@ pango_win32_render_layout_line (HDC              hdc,
       if (fg_set)
 	SetTextColor (hdc, oldfg);
 
-      if (uline != PANGO_UNDERLINE_NONE)
+      if (line_style != PANGO_LINE_STYLE_NONE)
 	{
 	  COLORREF uline_col = RGB ((uline_color.color.red) >> 8,
 				    (uline_color.color.green) >> 8,
@@ -955,11 +955,11 @@ pango_win32_render_layout_line (HDC              hdc,
 	  old_pen = SelectObject (hdc, uline_pen);
 	}
 
-      switch (uline)
+      switch (line_style)
 	{
-	case PANGO_UNDERLINE_NONE:
+	case PANGO_LINE_STYLE_NONE:
 	  break;
-	case PANGO_UNDERLINE_DOUBLE:
+	case PANGO_LINE_STYLE_DOUBLE:
 	  points[0].x = x + PANGO_PIXELS (x_off + ink_rect.x) - 1;
 	  points[0].y = points[1].y = y + 4;
 	  points[1].x = x + PANGO_PIXELS (x_off + ink_rect.x + ink_rect.width);
@@ -967,13 +967,13 @@ pango_win32_render_layout_line (HDC              hdc,
 	  points[0].y = points[1].y = y + 2;
 	  Polyline (hdc, points, 2);
 	  break;
-	case PANGO_UNDERLINE_SINGLE:
+	case PANGO_LINE_STYLE_SINGLE:
 	  points[0].x = x + PANGO_PIXELS (x_off + ink_rect.x) - 1;
 	  points[0].y = points[1].y = y + 2;
 	  points[1].x = x + PANGO_PIXELS (x_off + ink_rect.x + ink_rect.width);
 	  Polyline (hdc, points, 2);
 	  break;
-	case PANGO_UNDERLINE_ERROR:
+	case PANGO_LINE_STYLE_DOTTED:
 	  {
 	    int point_x;
 	    int counter = 0;
@@ -1004,12 +1004,12 @@ pango_win32_render_layout_line (HDC              hdc,
 	  break;
 	case PANGO_UNDERLINE_SINGLE_LINE:
 	case PANGO_UNDERLINE_DOUBLE_LINE:
-	case PANGO_UNDERLINE_ERROR_LINE:
-          g_warning ("Underline value %d not implemented", uline);
+	case PANGO_UNDERLINE_DOTTED_LINE:
+          g_warning ("Underline value %d not implemented", line_style);
           break;
 	}
 
-      if (uline != PANGO_UNDERLINE_NONE)
+      if (line_style != PANGO_LINE_STYLE_NONE)
 	{
 	  SelectObject (hdc, old_pen);
 	  DeleteObject (uline_pen);
@@ -1069,7 +1069,7 @@ pango_win32_render_layout (HDC          hdc,
  */
 static void
 pango_win32_get_item_properties (PangoItem      *item,
-				 PangoUnderline *uline,
+				 PangoLineStyle *line_style,
 				 PangoAttrColor *uline_color,
 				 gboolean       *uline_set,
 				 PangoAttrColor *fg_color,
@@ -1092,8 +1092,8 @@ pango_win32_get_item_properties (PangoItem      *item,
       switch (attr->klass->type)
 	{
 	case PANGO_ATTR_UNDERLINE:
-	  if (uline)
-	    *uline = ((PangoAttrInt *)attr)->value;
+	  if (line_style)
+	    *line_style = ((PangoAttrInt *)attr)->value;
 	  break;
 
 	case PANGO_ATTR_UNDERLINE_COLOR:
