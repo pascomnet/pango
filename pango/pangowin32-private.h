@@ -53,6 +53,7 @@
 #endif
 
 #include "pangowin32.h"
+#include "pango-font-face-private.h"
 #include "pango-font-private.h"
 #include "pango-fontset.h"
 #include "pango-fontmap-private.h"
